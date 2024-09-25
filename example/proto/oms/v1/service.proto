@@ -1,0 +1,67 @@
+syntax="proto3";
+
+package oms.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/bergundy/protoc-gen-go-nexus-temporal/gen/oms/v1;oms";
+
+service Orders {
+  rpc CreateOrder(CreateOrderInput) returns (CreateOrderOutput) {
+  }
+}
+
+service Billing {
+  rpc Charge(ChargeInput) returns (ChargeOutput) {
+  }
+}
+
+service Shipping {
+  rpc Shipment(ShipmentInput) returns (google.protobuf.Empty) {
+  }
+}
+
+message ChargeInput {
+  Order order = 1;
+}
+
+message ChargeOutput {
+  Order order = 1;
+}
+
+message CreateOrderInput {
+  string customer_id = 1;
+  repeated Item items = 2;
+}
+
+message CreateOrderOutput {
+  Order order = 1;
+}
+
+message Item {
+  string sku = 1;
+  uint32 quantity = 2;
+}
+
+message Order {
+  string id = 1;
+  string customer_id = 2;
+  repeated Item items = 3;
+  google.protobuf.Timestamp received_at = 4;
+  OrderStatus status = 5;
+}
+
+enum OrderStatus {
+  ORDER_STATUS_PENDING = 0;
+  ORDER_STATUS_IN_TRANSIT = 1;
+  ORDER_STATUS_COMPLETED = 2;
+}
+
+message ShipmentInput {
+  Order order = 1;
+}
+
+message ShipmentOutput {
+  Order order = 1;
+}

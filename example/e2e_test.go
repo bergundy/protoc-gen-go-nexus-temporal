@@ -12,6 +12,7 @@ import (
 	"go.temporal.io/api/operatorservice/v1"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/temporalnexus"
+	"go.temporal.io/sdk/testsuite"
 	"go.temporal.io/sdk/worker"
 	"go.temporal.io/sdk/workflow"
 )
@@ -47,6 +48,19 @@ func (*ordersHandler) CreateOrder(name string) nexus.Operation[*oms.CreateOrderI
 
 func TestE2E(t *testing.T) {
 	ctx := context.TODO()
+	srv, err := testsuite.StartDevServer(ctx, testsuite.DevServerOptions{
+		ClientOptions: &client.Options{
+			HostPort: "0.0.0.0:7233",
+		},
+		EnableUI: true,
+		ExtraArgs: []string{
+			"--http-port", "7243",
+			"--dynamic-config-value", "system.enableNexus=true",
+		},
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() { require.NoError(t, srv.Stop()) })
+
 	c, err := client.Dial(client.Options{HostPort: "localhost:7233"})
 	require.NoError(t, err)
 	w := worker.New(c, "example", worker.Options{})

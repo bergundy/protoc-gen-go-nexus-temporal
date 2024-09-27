@@ -5,20 +5,17 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/bergundy/protoc-gen-go-nexus-temporal/gen/oms/v1"
+	oms "github.com/bergundy/protoc-gen-go-nexus-temporal/gen/oms/v1"
 	"github.com/nexus-rpc/sdk-go/nexus"
 	"github.com/stretchr/testify/require"
 	nexuspb "go.temporal.io/api/nexus/v1"
-	"go.temporal.io/api/operatorservice/v1"
+	operatorservice "go.temporal.io/api/operatorservice/v1"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/temporalnexus"
 	"go.temporal.io/sdk/testsuite"
 	"go.temporal.io/sdk/worker"
 	"go.temporal.io/sdk/workflow"
 )
-
-type ordersHandler struct {
-}
 
 func CallerWorkflow(ctx workflow.Context) error {
 	c := oms.NewOrdersNexusClient("orders")
@@ -34,6 +31,9 @@ func CreateOrderWorkflow(ctx workflow.Context, input *oms.CreateOrderInput) (*om
 	return &oms.CreateOrderOutput{Order: &oms.Order{Id: "abc"}}, nil
 }
 
+type ordersHandler struct {
+}
+
 // CreateOrder implements oms.OrdersNexusServiceHandler.
 func (*ordersHandler) CreateOrder(name string) nexus.Operation[*oms.CreateOrderInput, *oms.CreateOrderOutput] {
 	return temporalnexus.NewWorkflowRunOperation(
@@ -47,7 +47,7 @@ func (*ordersHandler) CreateOrder(name string) nexus.Operation[*oms.CreateOrderI
 }
 
 func TestE2E(t *testing.T) {
-	ctx := context.TODO()
+	ctx := context.Background()
 	srv, err := testsuite.StartDevServer(ctx, testsuite.DevServerOptions{
 		ClientOptions: &client.Options{
 			HostPort: "0.0.0.0:7233",

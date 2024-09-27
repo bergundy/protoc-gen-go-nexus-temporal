@@ -56,12 +56,9 @@ func (p *Plugin) Run(plugin *protogen.Plugin) error {
 			p.genClient(f, svc)
 		}
 
-		if err := f.Render(p.Plugin.NewGeneratedFile("oms/v1/service_nexus_temporal.pb.go", file.GoImportPath)); err != nil {
+		if err := f.Render(p.Plugin.NewGeneratedFile(fmt.Sprintf("%s_nexus_temporal.pb.go", file.GeneratedFilenamePrefix), file.GoImportPath)); err != nil {
 			return fmt.Errorf("error rendering file: %w", err)
 		}
-		// if err := f.Render(p.Plugin.NewGeneratedFile(fmt.Sprintf("%s_nexus_temporal.pb.go", file.GeneratedFilenamePrefix), file.GoImportPath)); err != nil {
-		// 	return fmt.Errorf("error rendering file: %w", err)
-		// }
 	}
 
 	return nil

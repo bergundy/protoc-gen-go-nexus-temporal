@@ -2,6 +2,8 @@
 
 A PoC Protobuf plugin for generating Temporal Nexus code.
 
+**⚠️ EXPERIMENTAL: Generated code structure is subject to change as feedback is collected. ⚠️**
+
 ## Installation
 
 ```

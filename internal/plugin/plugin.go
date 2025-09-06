@@ -12,6 +12,8 @@ import (
 	"github.com/spf13/pflag"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 const nexusPkg = "github.com/nexus-rpc/sdk-go/nexus"
@@ -91,6 +93,9 @@ func (p *Plugin) Run(plugin *protogen.Plugin) error {
 	if err := p.init(); err != nil {
 		return err
 	}
+	plugin.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_SUPPORTS_EDITIONS | pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
+	plugin.SupportedEditionsMinimum = descriptorpb.Edition_EDITION_PROTO3
+	plugin.SupportedEditionsMaximum = descriptorpb.Edition_EDITION_2023
 	p.Plugin = plugin
 	for _, file := range plugin.Files {
 		if !file.Generate {

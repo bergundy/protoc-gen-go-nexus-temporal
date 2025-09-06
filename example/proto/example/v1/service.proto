@@ -1,10 +1,12 @@
-syntax="proto3";
+edition = "2023";
 
 package example.v1;
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
+import "google/protobuf/go_features.proto";
 
+option features.(pb.go).api_level = API_HYBRID;
+option features.field_presence = IMPLICIT;
 option go_package = "github.com/bergundy/protoc-gen-go-nexus-temporal/gen/example/v1;example";
 
 message ExampleInput {
@@ -16,13 +18,10 @@ message ExampleOutput {
 }
 
 service OneWay {
-  rpc NoInput(google.protobuf.Empty) returns (ExampleOutput) {
-  }
-  rpc NoOutput(ExampleInput) returns (google.protobuf.Empty) {
-  }
+  rpc NoInput(google.protobuf.Empty) returns (ExampleOutput) {}
+  rpc NoOutput(ExampleInput) returns (google.protobuf.Empty) {}
 }
 
 service TwoWay {
-  rpc Example(ExampleInput) returns (ExampleOutput) {
-  }
+  rpc Example(ExampleInput) returns (ExampleOutput) {}
 }

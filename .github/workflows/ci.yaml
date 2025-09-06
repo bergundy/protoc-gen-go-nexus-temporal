@@ -48,6 +48,8 @@ jobs:
           push: false
           # Protos are just examples, no need to check for breaking changes.
           breaking: false
+          # Don't format on windows due to newline differences.
+          format: ${{ matrix.runs-on == 'ubuntu-latest' }}
 
       - name: Install the protoc-gen-go-nexus dependency
         run: go install github.com/bergundy/protoc-gen-go-nexus/cmd/protoc-gen-go-nexus@latest

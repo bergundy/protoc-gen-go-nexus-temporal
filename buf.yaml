@@ -1,6 +1,8 @@
 version: v2
 modules:
   - path: example/proto
+deps:
+  - buf.build/bergundy/nexus
 lint:
   use:
     - BASIC

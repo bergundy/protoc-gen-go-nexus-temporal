@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"slices"
+	"strconv"
 
 	nexusv1 "github.com/bergundy/nexus-proto-annotations/go/nexus/v1"
 	"github.com/dave/jennifer/jen"
@@ -269,6 +270,7 @@ func (p *Plugin) genClient(f *jen.File, svc *protogen.Service, nexusPkgPath stri
 			}).
 			Id(futureName).
 			BlockFunc(func(g *jen.Group) {
+				genScheduleToCloseDefault(g, method)
 				g.Id("fut").Op(":=").Id("c").Dot("client").Dot("ExecuteOperation").
 					CallFunc(func(g *jen.Group) {
 						g.Id("ctx")
@@ -312,6 +314,7 @@ func (p *Plugin) genClient(f *jen.File, svc *protogen.Service, nexusPkgPath stri
 					g.Var().Id("output").Qual(string(method.Output.GoIdent.GoImportPath), method.Output.GoIdent.GoName)
 				}
 
+				genScheduleToCloseDefault(g, method)
 				g.Id("fut").Op(":=").Id("c").Dot("client").Dot("ExecuteOperation").
 					CallFunc(func(g *jen.Group) {
 						g.Id("ctx")
@@ -370,6 +373,22 @@ func (p *Plugin) shouldIncludeOperation(m *protogen.Method) bool {
 
 func operationNameConst(svc *protogen.Service, method *protogen.Method) string {
 	return fmt.Sprintf("%s%sOperationName", svc.GoName, method.GoName)
+}
+
+// genScheduleToCloseDefault generates a conditional timeout default if the proto
+// operation defines a schedule_to_close_timeout.
+func genScheduleToCloseDefault(g *jen.Group, method *protogen.Method) {
+	timeout := operationOptions(method).GetScheduleToCloseTimeout()
+	if timeout == nil {
+		return
+	}
+	ns := timeout.AsDuration().Nanoseconds()
+	if ns <= 0 {
+		return
+	}
+	g.If(jen.Id("options").Dot("ScheduleToCloseTimeout").Op("==").Lit(0)).Block(
+		jen.Id("options").Dot("ScheduleToCloseTimeout").Op("=").Id(strconv.FormatInt(ns, 10)),
+	)
 }
 
 // operationOptions returns the OperationOptions for the given proto Method

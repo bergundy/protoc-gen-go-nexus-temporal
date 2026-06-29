@@ -30,7 +30,7 @@ Follow instruction in the repo's [README](https://github.com/bergundy/protoc-gen
 
 ### Customize code generation
 
-Follow the instructions in [nexus-proto-annotations](https://github.com/bergundy/nexus-proto-annotations) for modifying
+Follow the instructions in [nexus-proto-annotations](https://github.com/nexus-rpc/nexus-proto-annotations) for modifying
 the service and operation names and tagging for includes and excludes.
 
 ### Create a proto file

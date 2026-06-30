@@ -18,6 +18,9 @@ jobs:
           - windows-latest
     name: Build, Lint, Test (${{ matrix.runs-on }})
     runs-on: ${{ matrix.runs-on }}
+    permissions:
+      contents: read
+      pull-requests: write
     defaults:
       run:
         shell: bash
@@ -50,6 +53,8 @@ jobs:
           breaking: false
           # Don't format on windows due to newline differences.
           format: ${{ matrix.runs-on == 'ubuntu-latest' }}
+          # Fork PRs get a read-only token, so posting a PR comment fails. Only comment for same-repo PRs.
+          pr_comment: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
 
       - name: Install the protoc-gen-go-nexus dependency
         run: go install github.com/bergundy/protoc-gen-go-nexus/cmd/protoc-gen-go-nexus@latest

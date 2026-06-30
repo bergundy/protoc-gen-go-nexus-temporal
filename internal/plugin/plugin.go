@@ -7,8 +7,8 @@ import (
 	"runtime"
 	"slices"
 
-	nexusv1 "github.com/bergundy/nexus-proto-annotations/go/nexus/v1"
 	"github.com/dave/jennifer/jen"
+	nexusv1 "github.com/nexus-rpc/nexus-proto-annotations/go/nexusannotations/v1"
 	"github.com/spf13/pflag"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
@@ -143,7 +143,7 @@ func (p *Plugin) Run(plugin *protogen.Plugin) error {
 		}
 
 		if err := f.Render(
-			p.Plugin.NewGeneratedFile(
+			p.NewGeneratedFile(
 				file.GeneratedFilenamePrefix+generatedFilenameExtension,
 				protogen.GoImportPath(importPath),
 			),
@@ -160,7 +160,7 @@ func (p *Plugin) genCodeGenerationHeader(f *jen.File, target *protogen.File) {
 	f.PackageComment("versions: ")
 	f.PackageComment(fmt.Sprintf("    protoc-gen-go-nexus-temporal %s (%s)", p.version, p.commit))
 	f.PackageComment(fmt.Sprintf("    go %s", runtime.Version()))
-	compilerVersion := p.Plugin.Request.CompilerVersion
+	compilerVersion := p.Request.CompilerVersion
 	if compilerVersion != nil {
 		f.PackageComment(fmt.Sprintf("    protoc %s", compilerVersion.String()))
 	} else {

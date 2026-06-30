@@ -1,10 +1,10 @@
 module github.com/bergundy/protoc-gen-go-nexus-temporal
 
-go 1.23.4
+go 1.25.4
 
 require (
-	github.com/bergundy/nexus-proto-annotations v0.1.0
 	github.com/dave/jennifer v1.7.1
+	github.com/nexus-rpc/nexus-proto-annotations v0.1.0
 	github.com/nexus-rpc/sdk-go v0.4.0
 	github.com/nexus-rpc/sdk-go/contrib/nexusproto v0.1.0
 	github.com/spf13/pflag v1.0.5
